@@ -53,6 +53,12 @@ def portfolio():
     return render_template("portfolio.html")
 
 
+@app.route("/messages")
+def messages():
+    all_messages = Message.query.all()
+    return render_template("messages.html", messages=all_messages)
+
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()

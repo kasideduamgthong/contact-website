@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
+from flask import request, redirect
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
@@ -15,6 +16,21 @@ class Message(db.Model):
     email = db.Column(db.String(100))
     subject = db.Column(db.String(200))
     message = db.Column(db.Text)
+
+
+@app.route("/contact", methods=["GET", "POST"])
+def contact():
+    if request.method == "POST":
+        new_message = Message(
+            name=request.form["name"],
+            email=request.form["email"],
+            subject=request.form["subject"],
+            message=request.form["message"],
+        )
+        db.session.add(new_message)
+        db.session.commit()
+        return redirect("/")
+    return render_template("contact.html")
 
 
 @app.route("/")

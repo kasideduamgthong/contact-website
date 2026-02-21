@@ -18,6 +18,12 @@ class Message(db.Model):
     message = db.Column(db.Text)
 
 
+class Blog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200))
+    content = db.Column(db.Text)
+
+
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
     if request.method == "POST":

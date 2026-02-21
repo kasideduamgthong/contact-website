@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Blog</h1>
+
+{% for post in posts %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h3>{{ post.title }}</h3>
+        <p>{{ post.content[:100] }}...</p>
+        <a href="/blog/{{ post.id }}" class="btn btn-dark">Read More</a>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

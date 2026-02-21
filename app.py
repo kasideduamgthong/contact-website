@@ -65,6 +65,12 @@ def messages():
     return render_template("messages.html", messages=all_messages)
 
 
+@app.route("/blog")
+def blog():
+    posts = Blog.query.all()
+    return render_template("blog.html", posts=posts)
+
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()

@@ -71,6 +71,12 @@ def blog():
     return render_template("blog.html", posts=posts)
 
 
+@app.route("/blog/<int:id>")
+def blog_detail(id):
+    post = Blog.query.get_or_404(id)
+    return render_template("blog_detail.html", post=post)
+
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Client Testimonials</h1>
+
+{% for review in reviews %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5>{{ review.client_name }}</h5>
+        <p>{{ review.feedback }}</p>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

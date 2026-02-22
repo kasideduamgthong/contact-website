@@ -88,6 +88,12 @@ def dashboard():
     return render_template("dashboard.html")
 
 
+@app.route("/testimonials")
+def testimonials():
+    reviews = Testimonial.query.all()
+    return render_template("testimonials.html", reviews=reviews)
+
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()

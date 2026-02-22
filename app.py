@@ -94,6 +94,11 @@ def testimonials():
     return render_template("testimonials.html", reviews=reviews)
 
 
+@app.route("/portfolio/<int:id>")
+def portfolio_detail(id):
+    return render_template("portfolio_detail.html", id=id)
+
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()

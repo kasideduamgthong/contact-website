@@ -24,6 +24,12 @@ class Blog(db.Model):
     content = db.Column(db.Text)
 
 
+class Testimonial(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    client_name = db.Column(db.String(100))
+    feedback = db.Column(db.Text)
+
+
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
     if request.method == "POST":

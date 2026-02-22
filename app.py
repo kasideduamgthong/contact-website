@@ -77,6 +77,11 @@ def blog_detail(id):
     return render_template("blog_detail.html", post=post)
 
 
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
+
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()

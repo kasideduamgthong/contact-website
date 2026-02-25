@@ -1,25 +1,31 @@
 # ==========================================
 # Contact Website - Flask Application
 # Developed by Kasided
+# Description:
+# A professional contact and portfolio website
+# built with Flask and SQLAlchemy.
 # ==========================================
 
+# ---------- Import Libraries ----------
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 
+# ---------- App Configuration ----------
 app = Flask(__name__)
-
-# ---------- Configuration ----------
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-
-# Secret key for session security
 app.config["SECRET_KEY"] = "contactwebsite_secret_key_2026"
-
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# Initialize Database
 db = SQLAlchemy(app)
 
+
 # ---------- Database Models ----------
+
+
 class Message(db.Model):
+    """Model for storing contact form messages"""
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     email = db.Column(db.String(100))
@@ -28,32 +34,24 @@ class Message(db.Model):
 
 
 class Blog(db.Model):
+    """Model for blog posts"""
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200))
     content = db.Column(db.Text)
 
 
 class Testimonial(db.Model):
+    """Model for client testimonials"""
+
     id = db.Column(db.Integer, primary_key=True)
     client_name = db.Column(db.String(100))
     feedback = db.Column(db.Text)
 
 
-@app.route("/contact", methods=["GET", "POST"])
-def contact():
-    if request.method == "POST":
-        new_message = Message(
-            name=request.form["name"],
-            email=request.form["email"],
-            subject=request.form["subject"],
-            message=request.form["message"],
-        )
-        db.session.add(new_message)
-        db.session.commit()
-        return redirect("/")
-    return render_template("contact.html")
-
 # ---------- Routes ----------
+
+
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -72,6 +70,26 @@ def services():
 @app.route("/portfolio")
 def portfolio():
     return render_template("portfolio.html")
+
+
+@app.route("/portfolio/<int:id>")
+def portfolio_detail(id):
+    return render_template("portfolio_detail.html", id=id)
+
+
+@app.route("/contact", methods=["GET", "POST"])
+def contact():
+    if request.method == "POST":
+        new_message = Message(
+            name=request.form["name"],
+            email=request.form["email"],
+            subject=request.form["subject"],
+            message=request.form["message"],
+        )
+        db.session.add(new_message)
+        db.session.commit()
+        return redirect("/")
+    return render_template("contact.html")
 
 
 @app.route("/messages")
@@ -103,11 +121,7 @@ def testimonials():
     return render_template("testimonials.html", reviews=reviews)
 
 
-@app.route("/portfolio/<int:id>")
-def portfolio_detail(id):
-    return render_template("portfolio_detail.html", id=id)
-
-
+# ---------- Run Application ----------
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()

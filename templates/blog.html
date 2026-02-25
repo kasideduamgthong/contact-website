@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Blog</h1>
+<h1 class="mb-4">Blog</h1>
 
 {% for post in posts %}
-<div class="card mb-3">
+<div class="card shadow mb-4">
     <div class="card-body">
-        <h3>{{ post.title }}</h3>
-        <p>{{ post.content[:100] }}...</p>
+        <h5 class="card-title">{{ post.title }}</h5>
+        <p class="card-text">{{ post.content[:100] }}...</p>
         <a href="/blog/{{ post.id }}" class="btn btn-dark">Read More</a>
     </div>
 </div>

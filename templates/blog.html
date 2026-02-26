@@ -7,6 +7,9 @@
 <div class="card shadow mb-4">
     <div class="card-body">
         <h5 class="card-title">{{ post.title }}</h5>
+        <p class="text-muted small">
+           Posted on {{ post.created_at.strftime('%d %b %Y') }}
+        </p>
         <p class="card-text">{{ post.content[:100] }}...</p>
         <a href="/blog/{{ post.id }}" class="btn btn-dark">Read More</a>
     </div>

@@ -9,6 +9,7 @@
 # ---------- Import Libraries ----------
 from flask import Flask, render_template, request, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 # ---------- App Configuration ----------
 app = Flask(__name__)
@@ -38,6 +39,7 @@ class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200))
     content = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 class Testimonial(db.Model):

@@ -1,25 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Messages</h1>
+<h1 class="mb-4">Admin - Messages</h1>
 
-<table class="table">
-    <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Subject</th>
-        <th>Message</th>
-    </tr>
-
-    {% for msg in messages %}
-    <tr>
-        <td>{{ msg.name }}</td>
-        <td>{{ msg.email }}</td>
-        <td>{{ msg.subject }}</td>
-        <td>{{ msg.message }}</td>
-    </tr>
-    {% endfor %}
-
-</table>
+<div class="card shadow">
+    <div class="card-body">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Subject</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for message in messages %}
+                <tr>
+                    <td>{{ message.id }}</td>
+                    <td>{{ message.name }}</td>
+                    <td>{{ message.email }}</td>
+                    <td>{{ message.subject }}</td>
+                    <td>{{ message.message }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock %}

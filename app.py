@@ -7,7 +7,7 @@
 # ==========================================
 
 # ---------- Import Libraries ----------
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 
 # ---------- App Configuration ----------
@@ -18,7 +18,6 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Initialize Database
 db = SQLAlchemy(app)
-
 
 # ---------- Database Models ----------
 
@@ -88,6 +87,10 @@ def contact():
         )
         db.session.add(new_message)
         db.session.commit()
+
+        # Flash message after successful submission
+        flash("Your message has been sent successfully!")
+
         return redirect("/")
     return render_template("contact.html")
 

@@ -3,15 +3,17 @@
 # Developed by Kasided
 # ==========================================
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
-from flask import request, redirect
 
 app = Flask(__name__)
 
 # ---------- Configuration ----------
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-app.config["SECRET_KEY"] = "supersecret"
+
+# Secret key for session security
+app.config["SECRET_KEY"] = "contactwebsite_secret_key_2026"
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)

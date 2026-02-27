@@ -1,15 +1,60 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Admin Dashboard</h1>
+<h2 class="mb-4">Dashboard Overview</h2>
 
 <div class="row">
+
     <div class="col-md-4">
-        <a href="/messages" class="btn btn-dark w-100 mb-2">View Messages</a>
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+                <h5>Total Messages</h5>
+                <h2 class="text-primary">{{ total_messages }}</h2>
+            </div>
+        </div>
     </div>
+
     <div class="col-md-4">
-        <a href="/blog" class="btn btn-dark w-100 mb-2">Manage Blog</a>
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+                <h5>Total Blog Posts</h5>
+                <h2 class="text-success">{{ total_posts }}</h2>
+            </div>
+        </div>
     </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+                <h5>Total Testimonials</h5>
+                <h2 class="text-warning">{{ total_testimonials }}</h2>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+<hr class="my-5">
+
+<h4>Recent Messages</h4>
+
+<table class="table table-striped mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Subject</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for msg in recent_messages %}
+        <tr>
+            <td>{{ msg.name }}</td>
+            <td>{{ msg.email }}</td>
+            <td>{{ msg.subject }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 {% endblock %}

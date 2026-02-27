@@ -117,7 +117,19 @@ def blog_detail(id):
 
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html")
+    total_messages = Message.query.count()
+    total_posts = Blog.query.count()
+    total_testimonials = Testimonial.query.count()
+
+    recent_messages = Message.query.order_by(Message.id.desc()).limit(5).all()
+
+    return render_template(
+        "dashboard.html",
+        total_messages=total_messages,
+        total_posts=total_posts,
+        total_testimonials=total_testimonials,
+        recent_messages=recent_messages,
+    )
 
 
 @app.route("/testimonials")

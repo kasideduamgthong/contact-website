@@ -109,6 +109,19 @@ def blog():
     return render_template("blog.html", posts=posts)
 
 
+@app.route("/add-blog", methods=["GET", "POST"])
+def add_blog():
+    if request.method == "POST":
+        new_post = Blog(title=request.form["title"], content=request.form["content"])
+        db.session.add(new_post)
+        db.session.commit()
+
+        flash("Blog post added successfully!")
+        return redirect("/blog")
+
+    return render_template("add_blog.html")
+
+
 @app.route("/blog/<int:id>")
 def blog_detail(id):
     post = Blog.query.get_or_404(id)

@@ -7,6 +7,16 @@ app.config['SECRET_KEY'] = 'secretkey'
 
 db = SQLAlchemy(app)
 
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    email = db.Column(db.String(100))
+    subject = db.Column(db.String(200))
+    message = db.Column(db.Text)
+
+    def __repr__(self):
+        return f"<Message {self.name}>"
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -28,4 +38,6 @@ def contact():
     return render_template('contact.html')
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)

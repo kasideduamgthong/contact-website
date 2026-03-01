@@ -46,17 +46,35 @@
             <th>Name</th>
             <th>Email</th>
             <th>Subject</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
+
+    {% if recent_messages %}
         {% for msg in recent_messages %}
         <tr>
             <td>{{ msg.name }}</td>
             <td>{{ msg.email }}</td>
             <td>{{ msg.subject }}</td>
+            <td>
+                <a href="/delete-message/{{ msg.id }}"
+                   class="btn btn-sm btn-danger"
+                   onclick="return confirm('Delete this message?');">
+                   Delete
+                </a>
+            </td>
         </tr>
         {% endfor %}
-    </tbody>
+    {% else %}
+        <tr>
+            <td colspan="4" class="text-center text-muted">
+                No messages yet.
+            </td>
+        </tr>
+    {% endif %}
+
+</tbody>
 </table>
 
 {% endblock %}

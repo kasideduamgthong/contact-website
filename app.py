@@ -7,9 +7,12 @@
 # ==========================================
 
 # ---------- Import Libraries ----------
-from flask import Flask, render_template, request, redirect, flash
+from flask import Flask, render_template, request, redirect, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "1234"
 
 # ---------- App Configuration ----------
 app = Flask(__name__)
@@ -93,10 +96,18 @@ def contact():
     return render_template("contact.html")
 
 
-@app.route("/messages")
-def messages():
-    all_messages = Message.query.all()
-    return render_template("messages.html", messages=all_messages)
+@app.route("/delete-message/<int:id>")
+def delete_message(id):
+
+    if not session.get("admin"):
+        return redirect("/admin-login")
+
+    message = Message.query.get_or_404(id)
+    db.session.delete(message)
+    db.session.commit()
+
+    flash("Message deleted successfully!")
+    return redirect("/dashboard")
 
 
 # ---------- Blog System ----------
@@ -157,6 +168,11 @@ def blog_detail(id):
 
 @app.route("/dashboard")
 def dashboard():
+
+    if not session.get("admin"):
+        flash("Please login as admin first!")
+        return redirect("/admin-login")
+
     total_messages = Message.query.count()
     total_posts = Blog.query.count()
     total_testimonials = Testimonial.query.count()
@@ -179,6 +195,29 @@ def dashboard():
 def testimonials():
     reviews = Testimonial.query.all()
     return render_template("testimonials.html", reviews=reviews)
+
+
+@app.route("/admin-login", methods=["GET", "POST"])
+def admin_login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            session["admin"] = True
+            flash("Login successful!")
+            return redirect("/dashboard")
+        else:
+            flash("Invalid credentials!")
+
+    return render_template("admin_login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.pop("admin", None)
+    flash("Logged out successfully!")
+    return redirect("/")
 
 
 # ---------- Run Application ----------

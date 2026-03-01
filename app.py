@@ -24,8 +24,6 @@ db = SQLAlchemy(app)
 
 
 class Message(db.Model):
-    """Model for storing contact form messages"""
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     email = db.Column(db.String(100))
@@ -34,8 +32,6 @@ class Message(db.Model):
 
 
 class Blog(db.Model):
-    """Model for blog posts"""
-
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200))
     content = db.Column(db.Text)
@@ -43,8 +39,6 @@ class Blog(db.Model):
 
 
 class Testimonial(db.Model):
-    """Model for client testimonials"""
-
     id = db.Column(db.Integer, primary_key=True)
     client_name = db.Column(db.String(100))
     feedback = db.Column(db.Text)
@@ -78,6 +72,9 @@ def portfolio_detail(id):
     return render_template("portfolio_detail.html", id=id)
 
 
+# ---------- Contact ----------
+
+
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
     if request.method == "POST":
@@ -90,10 +87,9 @@ def contact():
         db.session.add(new_message)
         db.session.commit()
 
-        # Flash message after successful submission
         flash("Your message has been sent successfully!")
-
         return redirect("/")
+
     return render_template("contact.html")
 
 
@@ -103,9 +99,12 @@ def messages():
     return render_template("messages.html", messages=all_messages)
 
 
+# ---------- Blog System ----------
+
+
 @app.route("/blog")
 def blog():
-    posts = Blog.query.all()
+    posts = Blog.query.order_by(Blog.created_at.desc()).all()
     return render_template("blog.html", posts=posts)
 
 
@@ -122,10 +121,38 @@ def add_blog():
     return render_template("add_blog.html")
 
 
+@app.route("/edit-blog/<int:id>", methods=["GET", "POST"])
+def edit_blog(id):
+    post = Blog.query.get_or_404(id)
+
+    if request.method == "POST":
+        post.title = request.form["title"]
+        post.content = request.form["content"]
+
+        db.session.commit()
+        flash("Blog updated successfully!")
+        return redirect("/blog")
+
+    return render_template("edit_blog.html", post=post)
+
+
+@app.route("/delete-blog/<int:id>")
+def delete_blog(id):
+    post = Blog.query.get_or_404(id)
+    db.session.delete(post)
+    db.session.commit()
+
+    flash("Blog deleted successfully!")
+    return redirect("/blog")
+
+
 @app.route("/blog/<int:id>")
 def blog_detail(id):
     post = Blog.query.get_or_404(id)
     return render_template("blog_detail.html", post=post)
+
+
+# ---------- Dashboard ----------
 
 
 @app.route("/dashboard")
@@ -143,6 +170,9 @@ def dashboard():
         total_testimonials=total_testimonials,
         recent_messages=recent_messages,
     )
+
+
+# ---------- Testimonials ----------
 
 
 @app.route("/testimonials")

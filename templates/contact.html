@@ -3,30 +3,14 @@
 {% block title %}Contact{% endblock %}
 
 {% block content %}
-<h2>Contact Me</h2>
+<h1>Contact Us</h1>
 
 <form method="POST">
-  <div class="mb-3">
-    <label class="form-label">Name</label>
-    <input type="text" name="name" class="form-control" required>
-  </div>
-
-  <div class="mb-3">
-    <label class="form-label">Email</label>
-    <input type="email" name="email" class="form-control" required>
-  </div>
-
-  <div class="mb-3">
-    <label class="form-label">Subject</label>
-    <input type="text" name="subject" class="form-control" required>
-  </div>
-
-  <div class="mb-3">
-    <label class="form-label">Message</label>
-    <textarea name="message" class="form-control" rows="4" required></textarea>
-  </div>
-
-  <button type="submit" class="btn btn-primary">Send Message</button>
+    <input type="text" name="name" placeholder="Your Name" required><br><br>
+    <input type="email" name="email" placeholder="Your Email" required><br><br>
+    <input type="text" name="subject" placeholder="Subject" required><br><br>
+    <textarea name="message" placeholder="Message" required></textarea><br><br>
+    <button type="submit">Send</button>
 </form>
 
 {% endblock %}

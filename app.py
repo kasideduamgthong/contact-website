@@ -3,10 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SECRET_KEY'] = 'secretkey'
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+app.config["SECRET_KEY"] = "secretkey"
 
 db = SQLAlchemy(app)
+
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -18,37 +19,49 @@ class Message(db.Model):
     def __repr__(self):
         return f"<Message {self.name}>"
 
-@app.route('/')
+
+@app.route("/")
 def home():
-    return render_template('home.html')
+    return render_template("home.html")
 
-@app.route('/about')
+
+@app.route("/about")
 def about():
-    return render_template('about.html')
+    return render_template("about.html")
 
-@app.route('/portfolio')
+
+@app.route("/portfolio")
 def portfolio():
-    return render_template('portfolio.html')
+    return render_template("portfolio.html")
 
-@app.route('/services')
+
+@app.route("/services")
 def services():
-    return render_template('services.html')
+    return render_template("services.html")
 
-@app.route('/contact', methods=['GET','POST'])
+
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
-    if request.method == 'POST':
+    if request.method == "POST":
         new_message = Message(
-            name=request.form['name'],
-            email=request.form['email'],
-            subject=request.form['subject'],
-            message=request.form['message']
+            name=request.form["name"],
+            email=request.form["email"],
+            subject=request.form["subject"],
+            message=request.form["message"],
         )
         db.session.add(new_message)
         db.session.commit()
-        return redirect('/')
-    return render_template('contact.html')
+        return redirect("/")
+    return render_template("contact.html")
 
-if __name__ == '__main__':
+
+@app.route("/messages")
+def messages():
+    all_messages = Message.query.all()
+    return render_template("messages.html", messages=all_messages)
+
+
+if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run(debug=True)

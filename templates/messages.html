@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}All Messages{% endblock %}
+
+{% block content %}
+<h1>All Messages</h1>
+
+{% for msg in messages %}
+    <hr>
+    <p><strong>Name:</strong> {{ msg.name }}</p>
+    <p><strong>Email:</strong> {{ msg.email }}</p>
+    <p><strong>Subject:</strong> {{ msg.subject }}</p>
+    <p><strong>Message:</strong> {{ msg.message }}</p>
+{% endfor %}
+
+{% endblock %}

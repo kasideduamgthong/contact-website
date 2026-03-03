@@ -1,18 +1,13 @@
 # ==========================================
 # Contact Website - Flask Application
 # Developed by Kasided
-# Description:
-# A professional contact and portfolio website
-# built with Flask and SQLAlchemy.
 # ==========================================
 
 # ---------- Import Libraries ----------
 from flask import Flask, render_template, request, redirect, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "1234"
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # ---------- App Configuration ----------
 app = Flask(__name__)
@@ -20,7 +15,6 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SECRET_KEY"] = "contactwebsite_secret_key_2026"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# Initialize Database
 db = SQLAlchemy(app)
 
 # ---------- Database Models ----------
@@ -45,6 +39,12 @@ class Testimonial(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     client_name = db.Column(db.String(100))
     feedback = db.Column(db.Text)
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
 
 
 # ---------- Routes ----------
@@ -99,7 +99,7 @@ def contact():
 @app.route("/delete-message/<int:id>")
 def delete_message(id):
 
-    if not session.get("admin"):
+    if not session.get("user_id"):
         return redirect("/admin-login")
 
     message = Message.query.get_or_404(id)
@@ -119,8 +119,18 @@ def blog():
     return render_template("blog.html", posts=posts)
 
 
+@app.route("/blog/<int:id>")
+def blog_detail(id):
+    post = Blog.query.get_or_404(id)
+    return render_template("blog_detail.html", post=post)
+
+
 @app.route("/add-blog", methods=["GET", "POST"])
 def add_blog():
+
+    if not session.get("user_id"):
+        return redirect("/admin-login")
+
     if request.method == "POST":
         new_post = Blog(title=request.form["title"], content=request.form["content"])
         db.session.add(new_post)
@@ -134,13 +144,17 @@ def add_blog():
 
 @app.route("/edit-blog/<int:id>", methods=["GET", "POST"])
 def edit_blog(id):
+
+    if not session.get("user_id"):
+        return redirect("/admin-login")
+
     post = Blog.query.get_or_404(id)
 
     if request.method == "POST":
         post.title = request.form["title"]
         post.content = request.form["content"]
-
         db.session.commit()
+
         flash("Blog updated successfully!")
         return redirect("/blog")
 
@@ -149,6 +163,10 @@ def edit_blog(id):
 
 @app.route("/delete-blog/<int:id>")
 def delete_blog(id):
+
+    if not session.get("user_id"):
+        return redirect("/admin-login")
+
     post = Blog.query.get_or_404(id)
     db.session.delete(post)
     db.session.commit()
@@ -157,26 +175,19 @@ def delete_blog(id):
     return redirect("/blog")
 
 
-@app.route("/blog/<int:id>")
-def blog_detail(id):
-    post = Blog.query.get_or_404(id)
-    return render_template("blog_detail.html", post=post)
-
-
 # ---------- Dashboard ----------
 
 
 @app.route("/dashboard")
 def dashboard():
 
-    if not session.get("admin"):
-        flash("Please login as admin first!")
+    if not session.get("user_id"):
+        flash("Please login first!")
         return redirect("/admin-login")
 
     total_messages = Message.query.count()
     total_posts = Blog.query.count()
     total_testimonials = Testimonial.query.count()
-
     recent_messages = Message.query.order_by(Message.id.desc()).limit(5).all()
 
     return render_template(
@@ -197,14 +208,40 @@ def testimonials():
     return render_template("testimonials.html", reviews=reviews)
 
 
+# ---------- Authentication ----------
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = generate_password_hash(request.form["password"])
+
+        if User.query.filter_by(username=username).first():
+            flash("Username already exists!")
+            return redirect("/register")
+
+        new_user = User(username=username, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash("Account created successfully! Please login.")
+        return redirect("/admin-login")
+
+    return render_template("register.html")
+
+
 @app.route("/admin-login", methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
 
-        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
-            session["admin"] = True
+        user = User.query.filter_by(username=username).first()
+
+        if user and check_password_hash(user.password, password):
+            session["user_id"] = user.id
+            session["username"] = user.username
             flash("Login successful!")
             return redirect("/dashboard")
         else:
@@ -215,7 +252,7 @@ def admin_login():
 
 @app.route("/logout")
 def logout():
-    session.pop("admin", None)
+    session.clear()
     flash("Logged out successfully!")
     return redirect("/")
 

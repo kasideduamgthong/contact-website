@@ -53,17 +53,20 @@
 
             <!-- เมนูขวา -->
             <ul class="navbar-nav ms-auto">
-                {% if session.get("admin") %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/dashboard">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-warning" href="/logout">Logout</a>
-                    </li>
+                {% if session.get("user_id") %}
+                <li class="nav-item">
+                <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+                </li>
                 {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin-login">Login</a>
-                    </li>
+                <li class="nav-item">
+                <a class="nav-link" href="/admin-login">Login</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="/register">Register</a>
+                </li>
                 {% endif %}
             </ul>
 
